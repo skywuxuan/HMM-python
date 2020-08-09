@@ -19,22 +19,6 @@ class HMM:
 		self.m=len(self.A)#状态集合个数
 		self.n=len(self.B[0])#观测集合个数
 
-	def get_stateprobability(self,t,p):
-		#打印在观测为self.o的前提下，t时刻，处于状态p的概率,
-		#self.x[t][p]表示到t时刻观测为o1,o2,ot,状态为p的概率
-		#self.y[t][p]表示在t时刻状态为p的前提下，接下来观测为ot+1,ot+2,oT的概率
-		#self.x[t][p]*self.y[t][p]即表示观测为self.o，且t时刻处于状态p的概率,
-		#利用贝叶斯公式，除以观测为self.o的概率即为所求
-		if(t>self.t or p>self.m):
-			print u'输入数据超过范围'
-			return
-		print u'在时刻'+str(t)+u'处于状态'+str(p)+u'的概率是：'
-		temp=self.x[t-1][p-1]*self.y[t-1][p-1]
-		total=0
-		for i in range(self.m):
-			total=total+self.x[t-1][i]*self.y[t-1][i]
-		print temp/total
-
 	def viterbi(self):
 		#利用模型和观测序列找出最优的状态序列
 		#时刻t时，很多路径可以到达状态i,且观测为self.o,
