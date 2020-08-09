@@ -19,53 +19,6 @@ class HMM:
 		self.m=len(self.A)#状态集合个数
 		self.n=len(self.B[0])#观测集合个数
 
-	def qianxiang(self):
-		#t时刻部分观测序列为o1,o2,ot,状态为qi的概率用矩阵x表示，
-		#则矩阵大小行数为观测序列数，列数为状态个数
-		self.x=array(zeros((self.t,self.m)))
-		#先计算出时刻1时，观测为o1,状态为qi的概率
-		for i in range(self.m):
-			self.x[0][i]=self.pi[i]*self.B[i][self.o[0]]
-		for j in range(1,self.t):
-			for i in range(self.m):
-				#前一时刻所有状态的概率乘以转移概率得到i状态概率
-				#i状态的概率*i状态到j观测的概率
-				temp=0
-				for k in range(self.m):
-					temp=temp+self.x[j-1][k]*self.A[k][i]
-				self.x[j][i]=temp*self.B[i][self.o[j]]
-		result=0
-		for i in range(self.m):
-			result=result+self.x[self.t-1][i]
-		print u"前向概率矩阵及当前观测序列概率如下："
-		print self.x
-		print result
-
-	def houxiang(self):
-		#t时刻状态为qi,从t+1到T观测为ot+1,ot+2,oT的概率用矩阵y表示
-		#则矩阵大小行数为观测序列数，列数为状态个数
-		self.y=array(zeros((self.t,self.m)))
-		#下面为对最终时刻的所有状态，接下来的观测序列概率初始化为1
-		#(可以理解为接下来没有观测所有为1)
-		for i in range(self.m):
-			self.y[self.t-1][i]=1
-		j=self.t-2
-		#j时刻为i状态，转移到k状态，k状态观测为oj+1,
-		#再乘以j+1时刻状态为k的B矩阵的值，对k遍历相加，
-		#即为j时刻i状态前提下，后面满足观测序列的概率
-		while(j>=0):
-			for i in range(self.m):
-				for k in range(self.m):
-					self.y[j][i]+=self.A[i][k]*self.B[k][self.o[j+1]]*self.y[j+1][k]
-			j=j-1
-		#第一个状态任意，观测为o1,所以对所有第一个状态概率相加
-		result=0
-		for i in range(self.m):
-			result=result+self.pi[i]*self.B[i][self.o[0]]*self.y[0][i]
-		print u'后向概率矩阵及当前观测序列概率如下：'
-		print self.y
-		print result
-
 	def get_stateprobability(self,t,p):
 		#打印在观测为self.o的前提下，t时刻，处于状态p的概率,
 		#self.x[t][p]表示到t时刻观测为o1,o2,ot,状态为p的概率
